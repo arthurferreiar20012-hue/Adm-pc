@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art Virtual PC</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main id="desktop">
+
+    <div class="top">
+      <b>🖥️ ART VIRTUAL PC</b>
+      <span id="status">● ONLINE</span>
+    </div>
+
+    <section class="icons">
+
+      <button onclick="openApp('games')">
+        🎮
+        <span>Jogos</span>
+      </button>
+
+      <button onclick="openApp('files')">
+        📁
+        <span>Arquivos</span>
+      </button>
+
+      <button onclick="openApp('browser')">
+        🌐
+        <span>Navegador</span>
+      </button>
+
+      <button onclick="openApp('settings')">
+        ⚙️
+        <span>Configurações</span>
+      </button>
+
+    </section>
+
+    <div id="window" class="window hidden">
+
+      <div class="windowTop">
+        <b id="windowTitle">Aplicativo</b>
+        <button onclick="closeApp()">✕</button>
+      </div>
+
+      <div id="windowContent" class="content"></div>
+
+    </div>
+
+    <footer>
+      <button onclick="openApp('games')">🎮</button>
+      <button onclick="openApp('files')">📁</button>
+      <button onclick="openApp('browser')">🌐</button>
+      <button onclick="openApp('settings')">⚙️</button>
+
+      <span id="clock"></span>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
