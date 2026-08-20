@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Art Virtual PC</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+  background:#0b1220;
+  color:white;
+  user-select:none
+}
+
+#pc{
+  width:100vw;
+  height:100vh;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 20%,#243b70 0%,transparent 35%),
+    linear-gradient(135deg,#101827,#07101d)
+}
+
+#desktop{
+  position:absolute;
+  inset:0 0 55px 0;
+  padding:25px;
+}
+
+.icon{
+  width:75px;
+  text-align:center;
+  margin-bottom:25px;
+  cursor:pointer;
+  font-size:13px
+}
+.icon span{
+  display:block;
+  font-size:35px;
+  margin-bottom:5px
+}
+
+#taskbar{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:55px;
+  background:rgba(10,15,25,.94);
+  backdrop-filter:blur(12px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border-top:1px solid #334155
+}
+
+.task{
+  border:0;
+  background:#182235;
+  color:white;
+  border-radius:8px;
+  padding:10px 15px;
+  cursor:pointer;
+  font-size:15px
+}
+.task:hover{background:#263651}
+
+#clock{
+  position:absolute;
+  right:15px;
+  font-size:13px;
+  color:#cbd5e1
+}
+
+.window{
+  position:absolute;
+  width:min(700px,90vw);
+  height:min(470px,75vh);
+  left:50%;
+  top:48%;
+  transform:translate(-50%,-50%);
+  background:#111827;
+  border:1px solid #334155;
+  border-radius:12px;
+  box-shadow:0 20px 70px #0008;
+  overflow:hidden;
+  display:none
+}
+
+.titlebar{
+  height:45px;
+  background:#172033;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  cursor:move
+}
+
+.close{
+  background:#ef4444;
+  border:0;
+  color:white;
+  width:30px;
+  height:28px;
+  border-radius:6px;
+  cursor:pointer
+}
+
+.content{
+  padding:20px;
+  height:calc(100% - 45px);
+  overflow:auto
+}
+
+.big{
+  font-size:30px;
+  margin-bottom:10px
+}
+
+.game{
+  background:#182235;
+  border:1px solid #334155;
+  padding:18px;
+  border-radius:12px;
+  margin-top:15px
+}
+
+.game button{
+  margin-top:12px;
+  background:#22c55e;
+  color:white;
+  border:0;
+  padding:10px 18px;
+  border-radius:7px;
+  cursor:pointer
+}
+
+.setting{
+  margin:15px 0;
+  background:#182235;
+  padding:15px;
+  border-radius:10px
+}
+
+input[type=range]{width:100%}
+
+#performance{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:#0009;
+  padding:7px 10px;
+  border-radius:7px;
+  font-size:12px;
+  color:#86efac
+}
+</style>
+</head>
+
+<body>
+
+<div id="pc">
+
+  <div id="desktop">
+
+    <div class="icon" onclick="openWindow('games')">
+      <span>🎮</span>
+      Jogos
+    </div>
+
+    <div class="icon" onclick="openWindow('files')">
+      <span>📁</span>
+      Arquivos
+    </div>
+
+    <div class="icon" onclick="openWindow('browser')">
+      <span>🌐</span>
+      Navegador
+    </div>
+
+    <div class="icon" onclick="openWindow('settings')">
+      <span>⚙️</span>
+      Configurações
+    </div>
+
+  </div>
+
+  <div id="performance">
+    FPS: <b id="fps">60</b> |
+    Status: <b>OK</b>
+  </div>
+
+  <!-- JOGOS -->
+  <div class="window" id="games">
+    <div class="titlebar">
+      <b>🎮 Central de Jogos</b>
+      <button class="close" onclick="closeWindow('games')">×</button>
+    </div>
+
+    <div class="content">
+      <div class="big">Meus Jogos</div>
+
+      <div class="game">
+        <h3>🌱 Roblox</h3>
+        <p>Pronto para conexão com o PC remoto.</p>
+        <button onclick="connectGame()">Conectar</button>
+      </div>
+
+      <div class="game">
+        <h3>🕹️ Outros jogos</h3>
+        <p>Adicione jogos quando conectar seu PC remoto.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARQUIVOS -->
+  <div class="window" id="files">
+    <div class="titlebar">
+      <b>📁 Explorador de Arquivos</b>
+      <button class="close" onclick="closeWindow('files')">×</button>
+    </div>
+
+    <div class="content">
+      <h2>Este PC</h2>
+      <br>
+      💾 Disco Virtual<br><br>
+      📂 Downloads<br><br>
+      📂 Documentos<br><br>
+      🖼️ Imagens
+    </div>
+  </div>
+
+  <!-- NAVEGADOR -->
+  <div class="window" id="browser">
+    <div class="titlebar">
+      <b>🌐 Navegador</b>
+      <button class="close" onclick="closeWindow('browser')">×</button>
+    </div>
+
+    <div class="content">
+      <h2>Navegador Virtual</h2>
+      <br>
+      <input id="url"
+        placeholder="Digite um endereço..."
+        style="width:100%;padding:12px;border-radius:7px;border:0">
+      <br><br>
+      <button class="task" onclick="browse()">Abrir</button>
+      <p id="browserStatus" style="margin-top:20px"></p>
+    </div>
+  </div>
+
+  <!-- CONFIGURAÇÕES -->
+  <div class="window" id="settings">
+    <div class="titlebar">
+      <b>⚙️ Configurações</b>
+      <button class="close" onclick="closeWindow('settings')">×</button>
+    </div>
+
+    <div class="content">
+      <h2>Desempenho</h2>
+
+      <div class="setting">
+        <b>Qualidade gráfica</b>
+        <input type="range" min="1" max="10" value="6"
+               oninput="quality.value=this.value">
+        <p>Nível: <span id="quality">6</span></p>
+      </div>
+
+      <div class="setting">
+        <b>Modo desempenho</b><br><br>
+        <button class="task" onclick="performanceMode()">
+          ⚡ Ativar
+        </button>
+      </div>
+
+      <div class="setting">
+        <b>Modo tela cheia</b><br><br>
+        <button class="task" onclick="fullscreen()">
+          🔲 Tela cheia
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA -->
+  <div id="taskbar">
+    <button class="task" onclick="openWindow('games')">🎮</button>
+    <button class="task" onclick="openWindow('files')">📁</button>
+    <button class="task" onclick="openWindow('browser')">🌐</button>
+    <button class="task" onclick="openWindow('settings')">⚙️</button>
+    <span id="clock"></span>
+  </div>
+
+</div>
+
+<script>
+
+function openWindow(id){
+  document.getElementById(id).style.display="block";
+}
+
+function closeWindow(id){
+  document.getElementById(id).style.display="none";
+}
+
+function fullscreen(){
+  document.documentElement.requestFullscreen?.();
+}
+
+function performanceMode(){
+  document.getElementById("performance").innerHTML =
+    'FPS: <b id="fps">60</b> | Status: <b style="color:#4ade80">DESEMPENHO</b>';
+}
+
+function connectGame(){
+  alert(
+    "PC remoto ainda não conectado.\\n\\n" +
+    "Esta interface está preparada para receber uma conexão " +
+    "com um PC/servidor remoto."
+  );
+}
+
+function browse(){
+  const value=document.getElementById("url").value;
+  document.getElementById("browserStatus").textContent =
+    value ? "Endereço preparado: "+value : "Digite um endereço.";
+}
+
+/* Relógio */
+function updateClock(){
+  document.getElementById("clock").textContent =
+    new Date().toLocaleTimeString("pt-BR",{
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+}
+setInterval(updateClock,1000);
+updateClock();
+
+/* FPS visual */
+let frames=0;
+let last=performance.now();
+
+function fpsLoop(){
+  frames++;
+
+  const now=performance.now();
+
+  if(now-last>=1000){
+    document.getElementById("fps").textContent=frames;
+    frames=0;
+    last=now;
+  }
+
+  requestAnimationFrame(fpsLoop);
+}
+
+fpsLoop();
+
+/* Janelas arrastáveis */
+document.querySelectorAll(".window").forEach(win=>{
+
+  const bar=win.querySelector(".titlebar");
+
+  let dragging=false;
+  let offsetX=0;
+  let offsetY=0;
+
+  bar.addEventListener("pointerdown",e=>{
+    dragging=true;
+
+    const rect=win.getBoundingClientRect();
+
+    offsetX=e.clientX-rect.left;
+    offsetY=e.clientY-rect.top;
+
+    win.style.transform="none";
+  });
+
+  document.addEventListener("pointermove",e=>{
+    if(!dragging)return;
+
+    win.style.left=(e.clientX-offsetX)+"px";
+    win.style.top=(e.clientY-offsetY)+"px";
+  });
+
+  document.addEventListener("pointerup",()=>{
+    dragging=false;
+  });
+
+});
+
+</script>
+
+</body>
+</html>
